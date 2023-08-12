@@ -1,11 +1,18 @@
 # https://www.odoo.com/documentation/16.0/developer/reference/external_api.html
 import xmlrpc.client
 
+# # online hrins Dev
+# url = 'https://odoodev.hrins.net'
+# db = 'HRiNS-Dev'
+# username = 'admin'
+# my_api_key = 'aF^_{s6mmWl.WHVH'
+
 url = 'http://localhost:8070'
 db = 'odoo-16-db'
 username = 'admin'
 # password = 'admin'
 my_api_key = '332031b56386f219eea45687ff1df8b5fad9d49b'
+
 
 common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
 version_info = common.version()
