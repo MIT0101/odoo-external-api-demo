@@ -13,10 +13,13 @@ username = 'admin'
 # password = 'admin'
 my_api_key = '332031b56386f219eea45687ff1df8b5fad9d49b'
 
+#######################--------- CONNECTION AND SERVER VERSION --------#################################
 
 common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
 version_info = common.version()
 print("Version Info : ", version_info)
+
+#######################--------- AUTHENTICATION  --------#################################
 
 # authenticate using username and password to get uid (user id )
 # uid = common.authenticate(db, username, password, {})
@@ -30,22 +33,34 @@ else:
 
 # search and read
 models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
+
+#######################--------- CHECK PERMISSION --------#################################
+
+
 # check if we have permission to read partner
 can_access_read_partner = models.execute_kw(db, uid, my_api_key, 'res.partner', 'check_access_rights', ['read'],
                                             {'raise_exception': False})
 if can_access_read_partner:
+    #######################--------- SEARCH (only ids response) --------#################################
+
     # all partner with is_company
     # specify the db and uid and password or api-key then model name and method then params and options as dictionary
     partner_company_ids = models.execute_kw(db, uid, my_api_key, 'res.partner', 'search', [[['is_company', '=', True]]])
 
+    #######################--------- SEARCH COUNT  (number response) --------#################################
+
     partner_company_count = models.execute_kw(db, uid, my_api_key, 'res.partner', 'search_count',
                                               [[['is_company', '=', True]]])
+
+    #######################--------- SEARCH PAGINATION (only ids response)--------#################################
 
     partner_company_pagination_ids = models.execute_kw(db, uid, my_api_key, 'res.partner', 'search',
                                                        [[['is_company', '=', True]]], {'offset': 1, "limit": 5})
 
     partner_email_ids = models.execute_kw(db, uid, my_api_key, 'res.partner', 'search',
                                           [[["email", "=", "colleen.diaz83@example.com"]]])
+
+    #######################--------- SEARCH READ (search and read data) --------#################################
 
     partner_company_search_read_recs = models.execute_kw(db, uid, my_api_key, "res.partner", "search_read",
                                                          [[['is_company', '=', True]]],
@@ -57,6 +72,9 @@ if can_access_read_partner:
     print("Partners Company Pagination (search_read) (limit 5) (fields id ,name ) : ", partner_company_search_read_recs)
     print("Partners Email Ids : ", partner_email_ids)
     print("--------------")
+
+    ####################--------- READ DATA (all fields data or specify fields using options) --------####################
+
     # get records values
     # this will get all fields of partner model
     # partner_recs = models.execute_kw(db, uid, password, 'res.partner', 'read', [partner_company_ids])
@@ -67,7 +85,6 @@ if can_access_read_partner:
     })
 
     print("Partners Company (Specific Fields) : ", partner_sp_fields_recs)
-
 
 else:
     print("Can't Access Partner")
